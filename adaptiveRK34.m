@@ -12,8 +12,8 @@ function [t,y] = adaptiveRK34(f,t0,tf,y0,tol)
   t(1) = t0;
   hnew = (abs(tf-t0)*tol^(1/4))/(100*(1+norm(f(t0,y0))));
   counter = 2;
-  while t(end) < tf
-    if t(end) + hnew > tf
+  while t(counter-1) < tf
+    if t(counter-1) + hnew > tf
       hnew = tf - t(end);
     end
     errold=err;

@@ -1,13 +1,10 @@
 function errtimeVS(A,y0,t0,tf,N)
- [~,err] = eulerint(A,y0,t0,tf,N); % felmatris
+ [~,err] = eulerint(A,y0,t0,tf,N);
  h =(tf-t0)/N;
- timearray = t0:h:tf;
- error = zeros(1,length(timearray));
- for k = 1:length(timearray)
-     error(k) = norm(err(:,k)); % "felnormen" vid varje tidpunkt
- end
- semilogy(timearray,error);
+ timearray(1) = 0;
+  for i = 1:N
+    timearray(i+1) = timearray(i)+ h;
+  end
+ semilogy(timearray,err);
  hold on;
 end
-
-% relative error?
