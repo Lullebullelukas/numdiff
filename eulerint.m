@@ -15,10 +15,10 @@ function [approx,err] = eulerint(A,y0,t0,tf,N)
 h=(tf-t0)/N;
 approx(:,1) = y0;
 correct(:,1) = y0;
-for i = 1:N-1
+for i = 1:N
     uold = approx(:,i);
     approx(:,i+1)=eulerstep(A,uold,h);
     correct(:,i+1) = expm(A.*(i*h-t0))*y0;
 end
 %err = abs(approx-expm(A.*(tf-t0))*y0);
-err = abs(approx-correct);
+err =(correct-approx);
