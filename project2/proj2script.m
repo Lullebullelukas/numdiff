@@ -1,14 +1,22 @@
-for N = 3:1000
-fvec = (1:N).^2 + 6;
-right = 4.*(10.*(1:N)./N).^4 + 3*(10.*(1:N)./N).^2;
+%Testing
+L = pi;
 alpha = 0;
-beta = 4.*(10).^4 + 3*(10).^2;
-cringe = twopBVP(fvec',alpha,beta,10,N);
-
-er(N) = max((abs(cringe - [0 right beta]')));
+beta = 0;
+j = 2:10;
+for i=j
+ N(i) = 2.^i;
+ deltax(i) = L./(N(i)+1);
+ x = (0:deltax(i):L);
+ inside = x(2:end-1);
+ fvec = sin(inside);
+ solution = -sin(x)';
+ approx = twopBVP(fvec',alpha, beta, L, N(i));
+ error(i) = sqrt(L/N(i)+1).*norm(approx-solution);
 end
+loglog(deltax,error)
+
+
 %Lägg till Louise Drenth som "inspiration"
-%felet är fuked
 %% Beam equation
 L = 10;
 N = 999;
@@ -38,7 +46,6 @@ tridiag = toeplitz(C,C');
 E = diag(D);
 [Esorted, ind] = sort(E, 'descend');
 V = V(:, ind);
-
 Vends = [];
 for i = 1:N
  ylast = (1/3)*((2*beta*deltax) + 4*V(end,i) - V(end-1,i));
@@ -52,5 +59,44 @@ hold on
 plot(x,V(:,1:3));
 k = (1:N)';
 correctE = -(pi.*k).^2;
-err = E(1:3) - correctE(1:3);
-% plot(err)
+%% 
+L = 1;
+alpha = 0;
+beta = 0; %neuman
+N = (2:20).^2;
+for i = 1:19
+  k = 0:N(i)-1;
+  deltax = 1./(N(i)+1);
+  C = [-2 1 zeros(1,N(i)-2)];
+  tridiag = toeplitz(C,C');
+  tridiag = tridiag(1:end-1,:);
+  tridiag = [tridiag ; zeros(1,N(i)-2) 2/3 -2/3]; 
+  [V,D] = eig(tridiag./(deltax));
+  
+  E = diag(D);
+  solution = (-((pi.*k + pi/2).^2))';
+  [Esorted, ind] = sort(E, 'descend');
+  error1(i) = sqrt(1/(N(i)+1)).*norm(Esorted(1)-solution(1));
+  error2(i) = sqrt(1/(N(i)+1)).*norm(Esorted(2)-solution(2));
+  error3(i) = sqrt((1/(N(i)+1)).*norm(Esorted(3)-solution(3)));
+end
+
+% subplot(311)
+% loglog(N,error1);
+% xlabel('Amount of inner elements N');
+% ylabel('error RMS');
+% 
+% subplot(312);
+% loglog(N,error2);
+% xlabel('Amount of inner elements N');
+% ylabel('error RMS');
+% 
+% subplot(313);
+% loglog(N,error3);
+% xlabel('Amount of inner elements N');
+% ylabel('error RMS');
+figure(2)
+hold on
+loglog(N,error3);
+loglog(N,N.^(-2));
+hold off
