@@ -11,10 +11,13 @@ for i=j
  fvec = sin(inside);
  solution = -sin(x)';
  approx = twopBVP(fvec',alpha, beta, L, N(i));
- error(i) = sqrt(L/N(i)+1).*norm(approx-solution);
+ error(i) = sqrt(L/(N(i)+1)).*norm(approx-solution);
 end
-loglog(deltax,error)
-
+figure(1)
+loglog(deltax, error);
+hold on
+loglog(deltax, deltax.^2);
+hold off
 
 %Lägg till Louise Drenth som "inspiration"
 %% Beam equation
@@ -63,40 +66,37 @@ correctE = -(pi.*k).^2;
 L = 1;
 alpha = 0;
 beta = 0; %neuman
-N = (2:20).^2;
-for i = 1:19
+N = (6:499);
+for i = 1:length(N)
   k = 0:N(i)-1;
   deltax = 1./(N(i)+1);
   C = [-2 1 zeros(1,N(i)-2)];
   tridiag = toeplitz(C,C');
   tridiag = tridiag(1:end-1,:);
   tridiag = [tridiag ; zeros(1,N(i)-2) 2/3 -2/3]; 
-  [V,D] = eig(tridiag./(deltax));
-  
+  [V,D] = eig(tridiag./(deltax.^2));
   E = diag(D);
   solution = (-((pi.*k + pi/2).^2))';
   [Esorted, ind] = sort(E, 'descend');
-  error1(i) = sqrt(1/(N(i)+1)).*norm(Esorted(1)-solution(1));
-  error2(i) = sqrt(1/(N(i)+1)).*norm(Esorted(2)-solution(2));
-  error3(i) = sqrt((1/(N(i)+1)).*norm(Esorted(3)-solution(3)));
+  error1(i) = abs(Esorted(1)-solution(1));
+  error2(i) = abs(Esorted(2)-solution(2));
+  error3(i) = abs(Esorted(3)-solution(3));
 end
 
-% subplot(311)
-% loglog(N,error1);
-% xlabel('Amount of inner elements N');
-% ylabel('error RMS');
-% 
-% subplot(312);
-% loglog(N,error2);
-% xlabel('Amount of inner elements N');
-% ylabel('error RMS');
-% 
-% subplot(313);
-% loglog(N,error3);
-% xlabel('Amount of inner elements N');
-% ylabel('error RMS');
-figure(2)
-hold on
+subplot(311)
+loglog(N,error1);
+xlabel('Amount of inner elements N');
+ylabel('error RMS');
+
+subplot(312);
+loglog(N,error2);
+xlabel('Amount of inner elements N');
+ylabel('error RMS');
+
+subplot(313);
 loglog(N,error3);
-loglog(N,N.^(-2));
-hold off
+xlabel('Amount of inner elements N');
+ylabel('error RMS');
+%Rätt lutningar, lite fucked
+%% 2.2
+
