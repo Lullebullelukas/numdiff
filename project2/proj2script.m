@@ -45,7 +45,9 @@ deltax = (1/(N+1));
 % deltax = 2*10^(-3);
 C = [-2 1 zeros(1,N-2)];
 tridiag = toeplitz(C,C');
-[V,D] = eig(tridiag./(deltax));
+tridiag = tridiag(1:end-1,:);
+tridiag = [tridiag ; zeros(1,N-2) 2/3 -2/3]; 
+[V,D] = eig(tridiag./(deltax.^2));
 E = diag(D);
 [Esorted, ind] = sort(E, 'descend');
 V = V(:, ind);
@@ -60,8 +62,6 @@ x = (0:500)./500;
 V =[zeros(1,N); V; Vends]; %% test
 hold on
 plot(x,V(:,1:3));
-k = (1:N)';
-correctE = -(pi.*k).^2;
 %% 
 L = 1;
 alpha = 0;
