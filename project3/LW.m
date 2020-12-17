@@ -10,6 +10,5 @@ Sdx = toeplitz(C2,R2)./(2*deltaX);
 
 
 unew = uold - dt.*uold.*Sdx*uold + ((dt^2)/2)*(2*uold.*Sdx*(uold.^2) + (uold.^2).*Tdx*uold);
-% unew = uold - dt.*uold.*Sdx*uold + ((dt^2)/2)*(2*uold.*(Sdx*uold).^2 + (uold.^2).*Tdx*uold);
 
 end

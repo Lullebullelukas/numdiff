@@ -62,15 +62,15 @@ ylabel("t")
 zlabel("u")
 %% task 2
 clear
-N = 150; % whilst kept at 100:
-M = 800; %505 for amu 1, 561 fpr 0.9, lower than 497 for wackyness
+N = 100; % whilst kept at 100:
+M = 505; %505 for amu 1, 561 fpr 0.9, lower than 497 for wackyness
 a=1;
 tend = 5;
 deltaX = 1/(N+1);
 deltaT = tend/M;
 
 x = linspace(0,1,N);
-u = exp(-100.*(x-0.5).^2)';
+u = 5*exp(-100.*(x-0.5).^2)';
 t = linspace(0,tend,M);
 sol(1,:)= u;
 amu = abs(a*deltaT/deltaX)
@@ -86,12 +86,14 @@ sol = sol';
 xx = linspace(0,1,N);
 tt = linspace(0,tend,M+1);
 [T,X] = meshgrid(tt,xx);
+figure(1)
 mesh(X,T,sol)
 xlabel("x")
 ylabel("t")
 zlabel("u")
 for j = 1:M
- rms(j) = sqrt(1/(N+1))*norm(sol(:,j));
+%   rms(j) = sqrt((1/N)*sum(sol(:,j).^2));
+ rms(j) = sqrt(1/(N))*norm(sol(:,j));
 end
 figure(2)
 plot(t, rms);
@@ -102,8 +104,8 @@ N = 100;
 M = 500;
 deltaX = 1/N;
 deltaT = 1/M;
-a = 10; %vary this
-d = 0.1; %and this
+a = 1; %vary this
+d = 0.01; %and this
 P=abs(a/d)
 x = linspace(0,1,N);
 u = exp(-100.*(x-0.5).^2)';
@@ -124,12 +126,12 @@ zlabel("u")
 %% Task 4
 clear
 N = 250;
-M = 1000;
+M = 5000;
 deltaX = 1/N;
 deltaT = 1/M;
 d = 0.01;
-x = linspace(0,1,N);
-u = 10*exp(-100.*(x-0.5).^2)';
+x = linspace(0,1,N+1);
+u = 5*exp(-100.*(x-0.5).^2)';
 sol(1,:) = u;
 for i = 1:M
   unew = burgerstep(u,d,deltaT);
@@ -137,9 +139,8 @@ for i = 1:M
   sol(i+1,:) = u;
 end
 sol = sol';
-xx = linspace(0,1,N);
 tt = linspace(0,1,M+1);
-[T,X] = meshgrid(tt,xx);
+[T,X] = meshgrid(tt,x);
 mesh(X,T,sol)
 xlabel("x")
 ylabel("t")
